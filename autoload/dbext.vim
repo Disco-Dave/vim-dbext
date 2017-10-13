@@ -4194,8 +4194,7 @@ function! s:DB_SQLSRV_getListView(view_prefix)
 endfunction
 function! s:DB_SQLSRV_getDictionaryTable() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
-                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "SELECT CONCAT(table_schema, '.', table_name) ".
                 \ "FROM information_schema.tables ".
                 \ "ORDER BY table_catalog, table_schema, table_name; "
                 \ )
@@ -4204,8 +4203,7 @@ endfunction "}}}
 
 function! s:DB_SQLSRV_getDictionaryProcedure() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, specific_catalog) AS Catalog_Name ".
-                \ "    ,CONCAT(specific_schema, '.', specific_name) AS Routine_Name ".
+                \ "SELECT CONCAT(specific_schema, '.', specific_name) ".
                 \ "FROM information_schema.routines ".
                 \ "ORDER BY specific_catalog, specific_schema, specific_name; "
                 \ )
@@ -4214,8 +4212,7 @@ endfunction "}}}
 
 function! s:DB_SQLSRV_getDictionaryView() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
-                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "SELECT CONCAT(table_schema, '.', table_name) ".
                 \ "FROM information_schema.views ".
                 \ "ORDER BY table_catalog, table_schema, table_name; "
                 \ )
