@@ -4117,12 +4117,13 @@ function! s:DB_SQLSRV_execSql(str)
     return result
 endfunction
 
+
 function! s:DB_SQLSRV_describeTable(table_name)
-    return s:DB_SQLSRV_execSql("exec sp_help ".a:table_name)
+    return s:DB_SQLSRV_execSql("exec sp_help '".a:table_name."'")
 endfunction
 
 function! s:DB_SQLSRV_describeProcedure(procedure_name)
-    return s:DB_SQLSRV_execSql("exec sp_help ".a:procedure_name)
+    return s:DB_SQLSRV_execSql("exec sp_help '".a:procedure_name."'")
 endfunction
 
 function! s:DB_SQLSRV_stripHeaderFooter(result)
