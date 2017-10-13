@@ -4165,69 +4165,63 @@ endfunction
 
 function! s:DB_SQLSRV_getListTable(table_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "select convert(varchar,o.name), convert(varchar,u.name) ".
-                \ "  from sysobjects o, sysusers u ".
-                \ " where o.uid=u.uid ".
-                \ "   and o.xtype='U' ".
-                \ "   and o.name like '".a:table_prefix."%' ".
-                \ " order by o.name"
+                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
+                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "FROM information_schema.tables ".
+                \ "WHERE CONCAT(table_schema, '.', table_name) LIKE '%".a:table_prefix."%' ".
+                \ "ORDER BY table_catalog, table_schema, table_name; "
                 \ )
 endfunction
 
 function! s:DB_SQLSRV_getListProcedure(proc_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "select convert(varchar,o.name), convert(varchar,u.name) ".
-                \ "  from sysobjects o, sysusers u ".
-                \ " where o.uid=u.uid ".
-                \ "   and o.xtype='P' ".
-                \ "   and o.name like '".a:proc_prefix."%' ".
-                \ " order by o.name"
+                \ "SELECT CONVERT(VARCHAR, specific_catalog) AS Catalog_Name ".
+                \ "    ,CONCAT(specific_schema, '.', specific_name) AS Routine_Name ".
+                \ "FROM information_schema.routines ".
+                \ "WHERE CONCAT(specific_schema, '.', specific_name) LIKE '%".a:proc_prefix."%' ".
+                \ "ORDER BY specific_catalog, specific_schema, specific_name; "
                 \ )
 endfunction
 
 function! s:DB_SQLSRV_getListView(view_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "select convert(varchar,o.name), convert(varchar,u.name) ".
-                \ "  from sysobjects o, sysusers u ".
-                \ " where o.uid=u.uid ".
-                \ "   and o.xtype='V' ".
-                \ "   and o.name like '".a:view_prefix."%' ".
-                \ " order by o.name"
+                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
+                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "FROM information_schema.views ".
+                \ "WHERE CONCAT(table_schema, '.', table_name) LIKE '%".a:view_prefix."%' ".
+                \ "ORDER BY table_catalog, table_schema, table_name; "
                 \ )
 endfunction
 function! s:DB_SQLSRV_getDictionaryTable() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "select ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name)+'.'+":'').
-                \ "       convert(varchar,o.name) ".
-                \ "  from sysobjects o, sysusers u ".
-                \ " where o.uid=u.uid ".
-                \ "   and o.xtype='U' ".
-                \ " order by ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name), ":'')."o.name"
+                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
+                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "FROM information_schema.tables ".
+                \ "ORDER BY table_catalog, table_schema, table_name; "
                 \ )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction "}}}
+
 function! s:DB_SQLSRV_getDictionaryProcedure() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "select ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name)+'.'+":'').
-                \ "       convert(varchar,o.name) ".
-                \ "  from sysobjects o, sysusers u ".
-                \ " where o.uid=u.uid ".
-                \ "   and o.xtype='P' ".
-                \ " order by ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name), ":'')."o.name"
+                \ "SELECT CONVERT(VARCHAR, specific_catalog) AS Catalog_Name ".
+                \ "    ,CONCAT(specific_schema, '.', specific_name) AS Routine_Name ".
+                \ "FROM information_schema.routines ".
+                \ "ORDER BY specific_catalog, specific_schema, specific_name; "
                 \ )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction "}}}
+
 function! s:DB_SQLSRV_getDictionaryView() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "select ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name)+'.'+":'').
-                \ "       convert(varchar,o.name) ".
-                \ "  from sysobjects o, sysusers u ".
-                \ " where o.uid=u.uid ".
-                \ "   and o.xtype='V' ".
-                \ " order by ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name), ":'')."o.name"
+                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
+                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "FROM information_schema.views ".
+                \ "ORDER BY table_catalog, table_schema, table_name; "
                 \ )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction "}}}
+
 "}}}
 " FIREBIRD exec {{{
 function! s:DB_FIREBIRD_execSql(str)
