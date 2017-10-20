@@ -4119,13 +4119,29 @@ endfunction
 
 
 function! s:DB_SQLSRV_describeTable(table_name)
-    return s:DB_SQLSRV_execSql("exec sp_help '".a:table_name."'")
+    return s:DB_SQLSRV_execSql(
+        \"exec sp_help '".a:table_name."'; ".
+        \ "SELECT ".
+        \ "    CONCAT(sc.name,'.',tr.name) AS [Trigger Name] ".
+        \ "FROM sys.triggers AS tr ".
+        \ "    INNER JOIN sys.tables AS ta ".
+        \ "        ON ta.object_id = tr.parent_id ".
+        \ "    INNER JOIN sys.schemas AS sc ".
+        \ "        ON sc.schema_id = ta.schema_id ".
+        \ "WHERE CONCAT(sc.name,'.',ta.name) LIKE '%".a:table_name."%' ".
+        \ "ORDER BY sc.name, ta.name, tr.name; "
+        \)
 endfunction
 
 function! s:DB_SQLSRV_describeProcedure(procedure_name)
     return s:DB_SQLSRV_execSql(
         \ "exec sp_help '".a:procedure_name."'; ".
         \ "exec sp_helptext '".a:procedure_name."'; ")
+endfunction
+
+function! s:DB_SQLSRV_describeTrigger(trigger_name)
+    return s:DB_SQLSRV_execSql(
+        \ "exec sp_helptext '".a:trigger_name."'; ")
 endfunction
 
 function! s:DB_SQLSRV_stripHeaderFooter(result)
@@ -4167,8 +4183,8 @@ endfunction
 
 function! s:DB_SQLSRV_getListTable(table_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
-                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "SELECT CONVERT(VARCHAR, table_catalog) AS [Catalog Name] ".
+                \ "    ,CONCAT(table_schema, '.', table_name) AS [Table Name] ".
                 \ "FROM information_schema.tables ".
                 \ "WHERE CONCAT(table_schema, '.', table_name) LIKE '%".a:table_prefix."%' ".
                 \ "ORDER BY table_catalog, table_schema, table_name; "
@@ -4177,8 +4193,8 @@ endfunction
 
 function! s:DB_SQLSRV_getListProcedure(proc_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, specific_catalog) AS Catalog_Name ".
-                \ "    ,CONCAT(specific_schema, '.', specific_name) AS Routine_Name ".
+                \ "SELECT CONVERT(VARCHAR, specific_catalog) AS [Catalog Name] ".
+                \ "    ,CONCAT(specific_schema, '.', specific_name) AS [Routine Name] ".
                 \ "FROM information_schema.routines ".
                 \ "WHERE CONCAT(specific_schema, '.', specific_name) LIKE '%".a:proc_prefix."%' ".
                 \ "ORDER BY specific_catalog, specific_schema, specific_name; "
@@ -4187,13 +4203,30 @@ endfunction
 
 function! s:DB_SQLSRV_getListView(view_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, table_catalog) AS Catalog_Name ".
-                \ "    ,CONCAT(table_schema, '.', table_name) AS Table_Name ".
+                \ "SELECT CONVERT(VARCHAR, table_catalog) AS [Catalog Name] ".
+                \ "    ,CONCAT(table_schema, '.', table_name) AS [Table Name] ".
                 \ "FROM information_schema.views ".
                 \ "WHERE CONCAT(table_schema, '.', table_name) LIKE '%".a:view_prefix."%' ".
                 \ "ORDER BY table_catalog, table_schema, table_name; "
                 \ )
 endfunction
+
+function! s:DB_SQLSRV_getListTrigger(trigger_prefix)
+    return s:DB_SQLSRV_execSql(
+                \ "SELECT ".
+                \ "    CONVERT(VARCHAR, CONCAT(sc.name,'.',ta.name)) AS [Table Name] ".
+                \ "    ,CONCAT(sc.name,'.',tr.name)  AS [Trigger Name] ".
+                \ "FROM sys.triggers AS tr ".
+                \ "    INNER JOIN sys.tables AS ta ".
+                \ "        ON ta.object_id = tr.parent_id ".
+                \ "    INNER JOIN sys.schemas AS sc ".
+                \ "        ON sc.schema_id = ta.schema_id ".
+                \ "WHERE CONCAT(sc.name,'.',tr.name) LIKE '%".a:trigger_prefix."%' ".
+                \ "ORDER BY sc.name, ta.name, tr.name; "
+                \ )
+endfunction
+
+
 function! s:DB_SQLSRV_getDictionaryTable() "{{{
     let result = s:DB_SQLSRV_execSql(
                 \ "SELECT CONCAT(table_schema, '.', table_name) ".
@@ -6196,6 +6229,20 @@ function! dbext#DB_describeProcedure(...)
     return dbext#DB_execFuncTypeWCheck('describeProcedure', procedure_name)
 endfunction
 
+function! dbext#DB_describeTrigger(...)
+    if(a:0 > 0)
+        let trigger_name = s:DB_getObjectAndQuote(a:1)
+    else
+        let trigger_name = expand("<cword>")
+    endif
+    if trigger_name == ""
+        call s:DB_warningMsg( 'dbext:You must supply a trigger name' )
+        return ""
+    endif
+
+    return dbext#DB_execFuncTypeWCheck('describeTrigger', trigger_name)
+endfunction
+
 function! dbext#DB_getListColumn(table_name, silent_mode, use_newline_sep )
     let table_name      = a:table_name
     let silent_mode     = a:silent_mode
@@ -6319,6 +6366,23 @@ function! dbext#DB_getListView(...)
         endif
     endif
     return dbext#DB_execFuncTypeWCheck('getListView', view_prefix)
+endfunction
+
+function! dbext#DB_getListTrigger(...)
+    if(a:0 > 0)
+        " Strip any leading or trailing spaces
+        let trigger_prefix = substitute(a:1,'\s*\(\w*\)\s*','\1','')
+    else
+        let trigger_prefix = s:DB_getInput(
+                    \ "Enter trigger prefix: ",
+                    \ '',
+                    \ "dbext_cancel"
+                    \ )
+        if trigger_prefix == "dbext_cancel"
+            return ""
+        endif
+    endif
+    return dbext#DB_execFuncTypeWCheck('getListTrigger', trigger_prefix)
 endfunction
 
 function! dbext#DB_getListConnections()
@@ -6498,6 +6562,10 @@ endfunction
 
 function! dbext#DB_describeProcedurePrompt()
     return dbext#DB_describeProcedure(input("Please enter the name of the procedure to describe: "))
+endfunction
+
+function! dbext#DB_describeTriggerPrompt()
+    return dbext#DB_describeProcedure(input("Please enter the name of the trigger to describe: "))
 endfunction
 
 function! s:DB_option(param, value, separator)
