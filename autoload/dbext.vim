@@ -68,7 +68,7 @@ let s:dbext_buffer_last       = -1
 " let s:dbext_prev_bufnr        = 0
 " }}}
 let s:dbext_job_support = 0
-if has('channel') && has('job') && has('timers')
+if (has('channel') && has('job') && has('timers')) || has('nvim')
     let s:dbext_job_support = 1
 endif
 
