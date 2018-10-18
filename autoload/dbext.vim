@@ -4128,7 +4128,7 @@ function! s:DB_SQLSRV_describeTable(table_name)
         \ "        ON ta.object_id = tr.parent_id ".
         \ "    INNER JOIN sys.schemas AS sc ".
         \ "        ON sc.schema_id = ta.schema_id ".
-        \ "WHERE CONCAT(sc.name,'.',ta.name) LIKE '%".a:table_name."%' ".
+        \ "WHERE CONCAT(sc.name,'.',ta.name) LIKE '".a:table_name."' ".
         \ "ORDER BY sc.name, ta.name, tr.name; "
         \)
 endfunction
@@ -4165,18 +4165,10 @@ endfunction
 function! s:DB_SQLSRV_getListColumn(table_name)
     let owner      = s:DB_getObjectOwner(a:table_name)
     let table_name = s:DB_getObjectName(a:table_name)
-    let query =   "select convert(varchar,c.name) ".
-                \ "  from sysobjects o, sysusers u, syscolumns c ".
-                \ " where o.uid=u.uid ".
-                \ "   and o.id=c.id ".
-                \ "   and o.xtype='U' ".
-                \ "   and o.name = '".table_name."' "
-    if strlen(owner) > 0
-        let query = query .
-                    \ "   and u.name = '".owner."' "
-    endif
-    let query = query .
-                \ " order by c.colid"
+    let query = "SELECT column_name ".
+              \ "FROM information_schema.columns ".
+              \ "WHERE table_name = '".a:table_name."' ".
+              \ "ORDER BY ORDINAL_POSITION "
     let result = s:DB_SQLSRV_execSql( query )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction
