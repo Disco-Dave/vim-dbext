@@ -1,11 +1,11 @@
-" dbext.vim - Commn Database Utility
+" dbext.vim - Common Database Utility
 " Copyright (C) 2002-16, Peter Bagyinszki, David Fishburn
 " ---------------------------------------------------------------
-" Version:       25.00
+" Version:       26.00
 " Maintainer:    David Fishburn <dfishburn dot vim at gmail dot com>
 " Authors:       Peter Bagyinszki <petike1 at dpg dot hu>
 "                David Fishburn <dfishburn dot vim at gmail dot com>
-" Last Modified: 2017 Jan 27
+" Last Modified: 2017 Oct 10
 " Based On:      sqlplus.vim (author: Jamis Buck)
 " Created:       2002-05-24
 " Homepage:      http://vim.sourceforge.net/script.php?script_id=356
@@ -40,7 +40,7 @@ if v:version < 702
     echomsg "dbext: Version 22.00 or higher requires Vim7.2 or higher.  Version 21.00 can stil be used with Vim 7.1 and lower."
     finish
 endif
-let g:loaded_dbext = 2500
+let g:loaded_dbext = 2600
 
 " Turn on support for line continuations when creating the script
 let s:cpo_save = &cpo
@@ -187,6 +187,7 @@ if !exists(':DBDescribeTriggerAskName')
     nmap <unique> <script> <Plug>DBDescribeTriggerAskName
                 \ :DBDescribeTriggerAskName<CR>
 endif
+
 if !exists(':DBPromptForBufferParameters')
     command! -nargs=0 DBPromptForBufferParameters
                 \ :call dbext#DB_execFuncWCheck('promptForParameters')
@@ -483,7 +484,6 @@ if has("gui_running") && has("menu") && g:dbext_default_menu_mode != 0
         exec 'inoremenu <script> '.menuRoot.'.Column\ List<TAB>'.leader.'slc  <C-O>:DBListColumn<CR>'
         exec 'vnoremenu <script> '.menuRoot.'.Column\ List<TAB>'.leader.'slc  :<C-U>exec ''DBListColumn "''.DB_getVisualBlock().''"''<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Table\ List<TAB>'.leader.'slt  :DBListTable<CR>'
-        exec 'noremenu  <script> '.menuRoot.'.Trigger\ List<TAB>'.leader.'slg  :DBListTrigger<CR>'
         exec 'inoremenu <script> '.menuRoot.'.Table\ List<TAB>'.leader.'slt  <C-O>:DBListTable<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Procedure\ List<TAB>'.leader.'slp  :DBListProcedure<CR>'
         exec 'inoremenu <script> '.menuRoot.'.Procedure\ List<TAB>'.leader.'slp  <C-O>:DBListProcedure<CR>'
@@ -491,6 +491,7 @@ if has("gui_running") && has("menu") && g:dbext_default_menu_mode != 0
         exec 'inoremenu <script> '.menuRoot.'.View\ List<TAB>'.leader.'slv  <C-O>:DBListView<CR>'
         exec 'vnoremenu <script> '.menuRoot.'.Assign\ Variable\ (Visual\ selection)<TAB>'.leader.'sa :DBVarRangeAssign<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Assign\ Variable\ (Current\ line)<TAB>'.leader.'sal :.,.DBVarRangeAssign<CR>'
+        exec 'noremenu  <script> '.menuRoot.'.Trigger\ List<TAB>'.leader.'slg  :DBListTrigger<CR>'
         exec 'noremenu  <script> '.menuRoot.'.List\ Variables<TAB>'.leader.'slr :DBListVar<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Complete\ Tables :DBCompleteTables<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Complete\ Procedures :DBCompleteProcedures<CR>'
