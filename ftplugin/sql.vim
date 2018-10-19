@@ -1,226 +1,232 @@
-" Keywords
-:iabbr <buffer> add ADD
-:iabbr <buffer> external EXTERNAL
-:iabbr <buffer> procedure PROCEDURE
-:iabbr <buffer> all ALL
-:iabbr <buffer> fetch FETCH
-:iabbr <buffer> public PUBLIC
-:iabbr <buffer> alter ALTER
-:iabbr <buffer> file FILE
-:iabbr <buffer> raiserror RAISERROR
-:iabbr <buffer> and AND
-:iabbr <buffer> fillfactor FILLFACTOR
-:iabbr <buffer> read READ
-:iabbr <buffer> any ANY
-:iabbr <buffer> for FOR
-:iabbr <buffer> readtext READTEXT
-:iabbr <buffer> as AS
-:iabbr <buffer> foreign FOREIGN
-:iabbr <buffer> reconfigure RECONFIGURE
-:iabbr <buffer> asc ASC
-:iabbr <buffer> freetext FREETEXT
-:iabbr <buffer> references REFERENCES
-:iabbr <buffer> authorization AUTHORIZATION
-:iabbr <buffer> freetexttable FREETEXTTABLE
-:iabbr <buffer> replication REPLICATION
-:iabbr <buffer> backup BACKUP
-:iabbr <buffer> from FROM
-:iabbr <buffer> restore RESTORE
-:iabbr <buffer> begin BEGIN
-:iabbr <buffer> full FULL
-:iabbr <buffer> restrict RESTRICT
-:iabbr <buffer> between BETWEEN
-:iabbr <buffer> function FUNCTION
-:iabbr <buffer> return RETURN
-:iabbr <buffer> break BREAK
-:iabbr <buffer> goto GOTO
-:iabbr <buffer> revert REVERT
-:iabbr <buffer> browse BROWSE
-:iabbr <buffer> grant GRANT
-:iabbr <buffer> revoke REVOKE
-:iabbr <buffer> bulk BULK
-:iabbr <buffer> group GROUP
-:iabbr <buffer> right RIGHT
-:iabbr <buffer> by BY
-:iabbr <buffer> having HAVING
-:iabbr <buffer> rollback ROLLBACK
-:iabbr <buffer> cascade CASCADE
-:iabbr <buffer> holdlock HOLDLOCK
-:iabbr <buffer> rowcount ROWCOUNT
-:iabbr <buffer> case CASE
-:iabbr <buffer> identity IDENTITY
-:iabbr <buffer> rowguidcol ROWGUIDCOL
-:iabbr <buffer> check CHECK
-:iabbr <buffer> identity_insert IDENTITY_INSERT
-:iabbr <buffer> rule RULE
-:iabbr <buffer> checkpoint CHECKPOINT
-:iabbr <buffer> identitycol IDENTITYCOL
-:iabbr <buffer> save SAVE
-:iabbr <buffer> close CLOSE
-:iabbr <buffer> if IF
-:iabbr <buffer> schema SCHEMA
-:iabbr <buffer> clustered CLUSTERED
-:iabbr <buffer> in IN
-:iabbr <buffer> securityaudit SECURITYAUDIT
-:iabbr <buffer> coalesce COALESCE
-:iabbr <buffer> index INDEX
-:iabbr <buffer> select SELECT
-:iabbr <buffer> collate COLLATE
-:iabbr <buffer> inner INNER
-:iabbr <buffer> semantickeyphrasetable SEMANTICKEYPHRASETABLE
-:iabbr <buffer> column COLUMN
-:iabbr <buffer> insert INSERT
-:iabbr <buffer> semanticsimilaritydetailstable SEMANTICSIMILARITYDETAILSTABLE
-:iabbr <buffer> commit COMMIT
-:iabbr <buffer> intersect INTERSECT
-:iabbr <buffer> semanticsimilaritytable SEMANTICSIMILARITYTABLE
-:iabbr <buffer> compute COMPUTE
-:iabbr <buffer> into INTO
-:iabbr <buffer> session_user SESSION_USER
-:iabbr <buffer> constraint CONSTRAINT
-:iabbr <buffer> is IS
-:iabbr <buffer> set SET
-:iabbr <buffer> contains CONTAINS
-:iabbr <buffer> join JOIN
-:iabbr <buffer> setuser SETUSER
-:iabbr <buffer> containstable CONTAINSTABLE
-:iabbr <buffer> key KEY
-:iabbr <buffer> shutdown SHUTDOWN
-:iabbr <buffer> continue CONTINUE
-:iabbr <buffer> kill KILL
-:iabbr <buffer> some SOME
-:iabbr <buffer> convert CONVERT
-:iabbr <buffer> left LEFT
-:iabbr <buffer> statistics STATISTICS
-:iabbr <buffer> create CREATE
-:iabbr <buffer> like LIKE
-:iabbr <buffer> system_user SYSTEM_USER
-:iabbr <buffer> cross CROSS
-:iabbr <buffer> apply APPLY
-:iabbr <buffer> lineno LINENO
-:iabbr <buffer> table TABLE
-:iabbr <buffer> current CURRENT
-:iabbr <buffer> load LOAD
-:iabbr <buffer> tablesample TABLESAMPLE
-:iabbr <buffer> current_date CURRENT_DATE
-:iabbr <buffer> merge MERGE
-:iabbr <buffer> textsize TEXTSIZE
-:iabbr <buffer> current_time CURRENT_TIME
-:iabbr <buffer> national NATIONAL
-:iabbr <buffer> then THEN
-:iabbr <buffer> current_timestamp CURRENT_TIMESTAMP
-:iabbr <buffer> nocheck NOCHECK
-:iabbr <buffer> to TO
-:iabbr <buffer> current_user CURRENT_USER
-:iabbr <buffer> nonclustered NONCLUSTERED
-:iabbr <buffer> top TOP
-:iabbr <buffer> cursor CURSOR
-:iabbr <buffer> not NOT
-:iabbr <buffer> tran TRAN
-:iabbr <buffer> database DATABASE
-:iabbr <buffer> null NULL
-:iabbr <buffer> transaction TRANSACTION
-:iabbr <buffer> dbcc DBCC
-:iabbr <buffer> nullif NULLIF
-:iabbr <buffer> trigger TRIGGER
-:iabbr <buffer> deallocate DEALLOCATE
-:iabbr <buffer> of OF
-:iabbr <buffer> truncate TRUNCATE
-:iabbr <buffer> declare DECLARE
-:iabbr <buffer> off OFF
-:iabbr <buffer> try_convert TRY_CONVERT
-:iabbr <buffer> default DEFAULT
-:iabbr <buffer> offsets OFFSETS
-:iabbr <buffer> tsequal TSEQUAL
-:iabbr <buffer> delete DELETE
-:iabbr <buffer> on ON
-:iabbr <buffer> union UNION
-:iabbr <buffer> deny DENY
-:iabbr <buffer> open OPEN
-:iabbr <buffer> unique UNIQUE
-:iabbr <buffer> desc DESC
-:iabbr <buffer> opendatasource OPENDATASOURCE
-:iabbr <buffer> unpivot UNPIVOT
-:iabbr <buffer> disk DISK
-:iabbr <buffer> openquery OPENQUERY
-:iabbr <buffer> update UPDATE
-:iabbr <buffer> distinct DISTINCT
-:iabbr <buffer> openrowset OPENROWSET
-:iabbr <buffer> updatetext UPDATETEXT
-:iabbr <buffer> distributed DISTRIBUTED
-:iabbr <buffer> openxml OPENXML
-:iabbr <buffer> use USE
-:iabbr <buffer> double DOUBLE
-:iabbr <buffer> option OPTION
-:iabbr <buffer> user USER
-:iabbr <buffer> drop DROP
-:iabbr <buffer> or OR
-:iabbr <buffer> values VALUES
-:iabbr <buffer> dump DUMP
-:iabbr <buffer> order ORDER
-:iabbr <buffer> varying VARYING
-:iabbr <buffer> else ELSE
-:iabbr <buffer> outer OUTER
-:iabbr <buffer> view VIEW
-:iabbr <buffer> end END
-:iabbr <buffer> over OVER
-:iabbr <buffer> waitfor WAITFOR
-:iabbr <buffer> errlvl ERRLVL
-:iabbr <buffer> percent PERCENT
-:iabbr <buffer> when WHEN
-:iabbr <buffer> escape ESCAPE
-:iabbr <buffer> pivot PIVOT
-:iabbr <buffer> where WHERE
-:iabbr <buffer> except EXCEPT
-:iabbr <buffer> plan PLAN
-:iabbr <buffer> while WHILE
-:iabbr <buffer> exec EXEC
-:iabbr <buffer> precision PRECISION
-:iabbr <buffer> with WITH
-:iabbr <buffer> execute EXECUTE
-:iabbr <buffer> primary PRIMARY
-:iabbr <buffer> within WITHIN GROUP
-:iabbr <buffer> exists EXISTS
-:iabbr <buffer> print PRINT
-:iabbr <buffer> writetext WRITETEXT
-:iabbr <buffer> exit EXIT
-:iabbr <buffer> proc PROC
+if !exists('g:dbext_uppercase_keywords')
+    let g:dbext_uppercase_keywords = 0
+endif
 
-" Common functions
-:iabbr <buffer> getdate GETDATE
-:iabbr <buffer> concat CONCAT
+if g:dbext_uppercase_keywords == 1
+    " Keywords
+    :iabbr <buffer> add ADD
+    :iabbr <buffer> external EXTERNAL
+    :iabbr <buffer> procedure PROCEDURE
+    :iabbr <buffer> all ALL
+    :iabbr <buffer> fetch FETCH
+    :iabbr <buffer> public PUBLIC
+    :iabbr <buffer> alter ALTER
+    :iabbr <buffer> file FILE
+    :iabbr <buffer> raiserror RAISERROR
+    :iabbr <buffer> and AND
+    :iabbr <buffer> fillfactor FILLFACTOR
+    :iabbr <buffer> read READ
+    :iabbr <buffer> any ANY
+    :iabbr <buffer> for FOR
+    :iabbr <buffer> readtext READTEXT
+    :iabbr <buffer> as AS
+    :iabbr <buffer> foreign FOREIGN
+    :iabbr <buffer> reconfigure RECONFIGURE
+    :iabbr <buffer> asc ASC
+    :iabbr <buffer> freetext FREETEXT
+    :iabbr <buffer> references REFERENCES
+    :iabbr <buffer> authorization AUTHORIZATION
+    :iabbr <buffer> freetexttable FREETEXTTABLE
+    :iabbr <buffer> replication REPLICATION
+    :iabbr <buffer> backup BACKUP
+    :iabbr <buffer> from FROM
+    :iabbr <buffer> restore RESTORE
+    :iabbr <buffer> begin BEGIN
+    :iabbr <buffer> full FULL
+    :iabbr <buffer> restrict RESTRICT
+    :iabbr <buffer> between BETWEEN
+    :iabbr <buffer> function FUNCTION
+    :iabbr <buffer> return RETURN
+    :iabbr <buffer> break BREAK
+    :iabbr <buffer> goto GOTO
+    :iabbr <buffer> revert REVERT
+    :iabbr <buffer> browse BROWSE
+    :iabbr <buffer> grant GRANT
+    :iabbr <buffer> revoke REVOKE
+    :iabbr <buffer> bulk BULK
+    :iabbr <buffer> group GROUP
+    :iabbr <buffer> right RIGHT
+    :iabbr <buffer> by BY
+    :iabbr <buffer> having HAVING
+    :iabbr <buffer> rollback ROLLBACK
+    :iabbr <buffer> cascade CASCADE
+    :iabbr <buffer> holdlock HOLDLOCK
+    :iabbr <buffer> rowcount ROWCOUNT
+    :iabbr <buffer> case CASE
+    :iabbr <buffer> identity IDENTITY
+    :iabbr <buffer> rowguidcol ROWGUIDCOL
+    :iabbr <buffer> check CHECK
+    :iabbr <buffer> identity_insert IDENTITY_INSERT
+    :iabbr <buffer> rule RULE
+    :iabbr <buffer> checkpoint CHECKPOINT
+    :iabbr <buffer> identitycol IDENTITYCOL
+    :iabbr <buffer> save SAVE
+    :iabbr <buffer> close CLOSE
+    :iabbr <buffer> if IF
+    :iabbr <buffer> schema SCHEMA
+    :iabbr <buffer> clustered CLUSTERED
+    :iabbr <buffer> in IN
+    :iabbr <buffer> securityaudit SECURITYAUDIT
+    :iabbr <buffer> coalesce COALESCE
+    :iabbr <buffer> index INDEX
+    :iabbr <buffer> select SELECT
+    :iabbr <buffer> collate COLLATE
+    :iabbr <buffer> inner INNER
+    :iabbr <buffer> semantickeyphrasetable SEMANTICKEYPHRASETABLE
+    :iabbr <buffer> column COLUMN
+    :iabbr <buffer> insert INSERT
+    :iabbr <buffer> semanticsimilaritydetailstable SEMANTICSIMILARITYDETAILSTABLE
+    :iabbr <buffer> commit COMMIT
+    :iabbr <buffer> intersect INTERSECT
+    :iabbr <buffer> semanticsimilaritytable SEMANTICSIMILARITYTABLE
+    :iabbr <buffer> compute COMPUTE
+    :iabbr <buffer> into INTO
+    :iabbr <buffer> session_user SESSION_USER
+    :iabbr <buffer> constraint CONSTRAINT
+    :iabbr <buffer> is IS
+    :iabbr <buffer> set SET
+    :iabbr <buffer> contains CONTAINS
+    :iabbr <buffer> join JOIN
+    :iabbr <buffer> setuser SETUSER
+    :iabbr <buffer> containstable CONTAINSTABLE
+    :iabbr <buffer> key KEY
+    :iabbr <buffer> shutdown SHUTDOWN
+    :iabbr <buffer> continue CONTINUE
+    :iabbr <buffer> kill KILL
+    :iabbr <buffer> some SOME
+    :iabbr <buffer> convert CONVERT
+    :iabbr <buffer> left LEFT
+    :iabbr <buffer> statistics STATISTICS
+    :iabbr <buffer> create CREATE
+    :iabbr <buffer> like LIKE
+    :iabbr <buffer> system_user SYSTEM_USER
+    :iabbr <buffer> cross CROSS
+    :iabbr <buffer> apply APPLY
+    :iabbr <buffer> lineno LINENO
+    :iabbr <buffer> table TABLE
+    :iabbr <buffer> current CURRENT
+    :iabbr <buffer> load LOAD
+    :iabbr <buffer> tablesample TABLESAMPLE
+    :iabbr <buffer> current_date CURRENT_DATE
+    :iabbr <buffer> merge MERGE
+    :iabbr <buffer> textsize TEXTSIZE
+    :iabbr <buffer> current_time CURRENT_TIME
+    :iabbr <buffer> national NATIONAL
+    :iabbr <buffer> then THEN
+    :iabbr <buffer> current_timestamp CURRENT_TIMESTAMP
+    :iabbr <buffer> nocheck NOCHECK
+    :iabbr <buffer> to TO
+    :iabbr <buffer> current_user CURRENT_USER
+    :iabbr <buffer> nonclustered NONCLUSTERED
+    :iabbr <buffer> top TOP
+    :iabbr <buffer> cursor CURSOR
+    :iabbr <buffer> not NOT
+    :iabbr <buffer> tran TRAN
+    :iabbr <buffer> database DATABASE
+    :iabbr <buffer> null NULL
+    :iabbr <buffer> transaction TRANSACTION
+    :iabbr <buffer> dbcc DBCC
+    :iabbr <buffer> nullif NULLIF
+    :iabbr <buffer> trigger TRIGGER
+    :iabbr <buffer> deallocate DEALLOCATE
+    :iabbr <buffer> of OF
+    :iabbr <buffer> truncate TRUNCATE
+    :iabbr <buffer> declare DECLARE
+    :iabbr <buffer> off OFF
+    :iabbr <buffer> try_convert TRY_CONVERT
+    :iabbr <buffer> default DEFAULT
+    :iabbr <buffer> offsets OFFSETS
+    :iabbr <buffer> tsequal TSEQUAL
+    :iabbr <buffer> delete DELETE
+    :iabbr <buffer> on ON
+    :iabbr <buffer> union UNION
+    :iabbr <buffer> deny DENY
+    :iabbr <buffer> open OPEN
+    :iabbr <buffer> unique UNIQUE
+    :iabbr <buffer> desc DESC
+    :iabbr <buffer> opendatasource OPENDATASOURCE
+    :iabbr <buffer> unpivot UNPIVOT
+    :iabbr <buffer> disk DISK
+    :iabbr <buffer> openquery OPENQUERY
+    :iabbr <buffer> update UPDATE
+    :iabbr <buffer> distinct DISTINCT
+    :iabbr <buffer> openrowset OPENROWSET
+    :iabbr <buffer> updatetext UPDATETEXT
+    :iabbr <buffer> distributed DISTRIBUTED
+    :iabbr <buffer> openxml OPENXML
+    :iabbr <buffer> use USE
+    :iabbr <buffer> double DOUBLE
+    :iabbr <buffer> option OPTION
+    :iabbr <buffer> user USER
+    :iabbr <buffer> drop DROP
+    :iabbr <buffer> or OR
+    :iabbr <buffer> values VALUES
+    :iabbr <buffer> dump DUMP
+    :iabbr <buffer> order ORDER
+    :iabbr <buffer> varying VARYING
+    :iabbr <buffer> else ELSE
+    :iabbr <buffer> outer OUTER
+    :iabbr <buffer> view VIEW
+    :iabbr <buffer> end END
+    :iabbr <buffer> over OVER
+    :iabbr <buffer> waitfor WAITFOR
+    :iabbr <buffer> errlvl ERRLVL
+    :iabbr <buffer> percent PERCENT
+    :iabbr <buffer> when WHEN
+    :iabbr <buffer> escape ESCAPE
+    :iabbr <buffer> pivot PIVOT
+    :iabbr <buffer> where WHERE
+    :iabbr <buffer> except EXCEPT
+    :iabbr <buffer> plan PLAN
+    :iabbr <buffer> while WHILE
+    :iabbr <buffer> exec EXEC
+    :iabbr <buffer> precision PRECISION
+    :iabbr <buffer> with WITH
+    :iabbr <buffer> execute EXECUTE
+    :iabbr <buffer> primary PRIMARY
+    :iabbr <buffer> within WITHIN GROUP
+    :iabbr <buffer> exists EXISTS
+    :iabbr <buffer> print PRINT
+    :iabbr <buffer> writetext WRITETEXT
+    :iabbr <buffer> exit EXIT
+    :iabbr <buffer> proc PROC
 
-" Data types
-:abbr <buffer> bigint BIGINT
-:abbr <buffer> numeric NUMERIC
-:abbr <buffer> bit BIT
-:abbr <buffer> smallint SMALLINT
-:abbr <buffer> decimal DECIMAL
-:abbr <buffer> smallmoney SMALLMONEY
-:abbr <buffer> int INT
-:abbr <buffer> tinyint TINYINT
-:abbr <buffer> money MONEY
-:abbr <buffer> float FLOAT
-:abbr <buffer> real REAL
-:abbr <buffer> date DATE
-:abbr <buffer> datetimeoffset DATETIMEOFFSET
-:abbr <buffer> datetime2 DATETIME2
-:abbr <buffer> smalldatetime SMALLDATETIME
-:abbr <buffer> datetime DATETIME
-:abbr <buffer> time TIME
-:abbr <buffer> char CHAR
-:abbr <buffer> varchar VARCHAR
-:abbr <buffer> text TEXT
-:abbr <buffer> nchar NCHAR
-:abbr <buffer> nvarchar NVARCHAR
-:abbr <buffer> ntext NTEXT
-:abbr <buffer> binary BINARY
-:abbr <buffer> varbinary VARBINARY
-:abbr <buffer> image IMAGE
-:abbr <buffer> cursor CURSOR
-:abbr <buffer> rowversion ROWVERSION
-:abbr <buffer> hierarchyid HIERARCHYID
-:abbr <buffer> uniqueidentifier UNIQUEIDENTIFIER
-:abbr <buffer> sql_variant SQL_VARIANT
-:abbr <buffer> xml XML
-:abbr <buffer> table TABLE
+    " Common functions
+    :iabbr <buffer> getdate GETDATE
+    :iabbr <buffer> concat CONCAT
+
+    " Data types
+    :abbr <buffer> bigint BIGINT
+    :abbr <buffer> numeric NUMERIC
+    :abbr <buffer> bit BIT
+    :abbr <buffer> smallint SMALLINT
+    :abbr <buffer> decimal DECIMAL
+    :abbr <buffer> smallmoney SMALLMONEY
+    :abbr <buffer> int INT
+    :abbr <buffer> tinyint TINYINT
+    :abbr <buffer> money MONEY
+    :abbr <buffer> float FLOAT
+    :abbr <buffer> real REAL
+    :abbr <buffer> date DATE
+    :abbr <buffer> datetimeoffset DATETIMEOFFSET
+    :abbr <buffer> datetime2 DATETIME2
+    :abbr <buffer> smalldatetime SMALLDATETIME
+    :abbr <buffer> datetime DATETIME
+    :abbr <buffer> time TIME
+    :abbr <buffer> char CHAR
+    :abbr <buffer> varchar VARCHAR
+    :abbr <buffer> text TEXT
+    :abbr <buffer> nchar NCHAR
+    :abbr <buffer> nvarchar NVARCHAR
+    :abbr <buffer> ntext NTEXT
+    :abbr <buffer> binary BINARY
+    :abbr <buffer> varbinary VARBINARY
+    :abbr <buffer> image IMAGE
+    :abbr <buffer> cursor CURSOR
+    :abbr <buffer> rowversion ROWVERSION
+    :abbr <buffer> hierarchyid HIERARCHYID
+    :abbr <buffer> uniqueidentifier UNIQUEIDENTIFIER
+    :abbr <buffer> sql_variant SQL_VARIANT
+    :abbr <buffer> xml XML
+    :abbr <buffer> table TABLE
+endif
