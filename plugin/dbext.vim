@@ -176,18 +176,6 @@ if !exists(':DBDescribeProcedureAskName')
     nmap <unique> <script> <Plug>DBDescribeProcedureAskName
                 \ :DBDescribeProcedureAskName<CR>
 endif
-if !exists(':DBDescribeTrigger')
-    command! -nargs=* -range DBDescribeTrigger
-                \ :call dbext#DB_describeTrigger(<args>)
-    nmap <unique> <script> <Plug>DBDescribeTrigger :DBDescribeTrigger<CR>
-endif
-if !exists(':DBDescribeTriggerAskName')
-    command! -nargs=0 DBDescribeTriggerAskName
-                \ :call dbext#DB_describeTriggerPrompt()
-    nmap <unique> <script> <Plug>DBDescribeTriggerAskName
-                \ :DBDescribeTriggerAskName<CR>
-endif
-
 if !exists(':DBPromptForBufferParameters')
     command! -nargs=0 DBPromptForBufferParameters
                 \ :call dbext#DB_execFuncWCheck('promptForParameters')
@@ -216,12 +204,6 @@ if !exists(':DBListView')
                 \ :call dbext#DB_getListView(<f-args>)
     nmap <unique> <script> <Plug>DBListView
                 \ :DBListView<CR>
-endif
-if !exists(':DBListTrigger')
-    command! -nargs=? DBListTrigger
-                \ :call dbext#DB_getListTrigger(<f-args>)
-    nmap <unique> <script> <Plug>DBListTrigger
-                \ :DBListTrigger<CR>
 endif
 if !exists(':DBCompleteTables')
     command! -nargs=0 -bang DBCompleteTables
@@ -329,15 +311,6 @@ if g:dbext_default_usermaps != 0
     if maparg(g:dbext_map_prefix.'dpa', 'n') == ''
         exec 'nmap <unique> '.g:dbext_map_prefix.'dpa <Plug>DBDescribeProcedureAskName'
     endif
-    if maparg(g:dbext_map_prefix.'dg', 'n') == ''
-        exec 'nmap <unique> '.g:dbext_map_prefix.'dg <Plug>DBDescribeTrigger'
-    endif
-    if maparg(g:dbext_map_prefix.'dg', 'x') == ''
-        exec 'xmap <unique> <silent> '.g:dbext_map_prefix.'dg :<C-U>exec '.'"'."DBDescribeTrigger '".'".DB_getVisualBlock()."'."'".'"'.'<CR>'
-    endif
-    if maparg(g:dbext_map_prefix.'dga', 'n') == ''
-        exec 'nmap <unique> '.g:dbext_map_prefix.'dga <Plug>DBDescribeTriggerAskName'
-    endif
     if maparg(g:dbext_map_prefix.'bp', 'n') == ''
         exec 'nmap <unique> '.g:dbext_map_prefix.'bp <Plug>DBPromptForBufferParameters'
     endif
@@ -349,9 +322,6 @@ if g:dbext_default_usermaps != 0
     endif
     if maparg(g:dbext_map_prefix.'lt', 'n') == ''
         exec 'nmap <unique> '.g:dbext_map_prefix.'lt <Plug>DBListTable'
-    endif
-    if maparg(g:dbext_map_prefix.'lg', 'n') == ''
-        exec 'nmap <unique> '.g:dbext_map_prefix.'lg <Plug>DBListTrigger'
     endif
     if maparg(g:dbext_map_prefix.'lp', 'n') == ''
         exec 'nmap <unique> '.g:dbext_map_prefix.'lp <Plug>DBListProcedure'
@@ -432,8 +402,6 @@ if has("gui_running") && has("menu") && g:dbext_default_menu_mode != 0
         exec 'vnoremenu <script> '.menuRoot.'.Describe\ Procedure<TAB>'.leader.'sdp  :<C-U>exec ''DBDescribeProcedure "''.DB_getVisualBlock().''"''<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Describe\ Procedure\ Ask<TAB>'.leader.'sdpa  :call feedkeys("'.leader.'sdpa")<CR>'
         exec 'inoremenu <script> '.menuRoot.'.Describe\ Procedure\ Ask<TAB>'.leader.'sdpa  <C-O>:silent call feedkeys("<C-O>'.leader.'sdpa")<CR>'
-        exec 'noremenu  <script> '.menuRoot.'.Describe\ Trigger<TAB>'.leader.'sdp  :call feedkeys("'.leader.'sdg")<CR>'
-        exec 'noremenu  <script> '.menuRoot.'.Describe\ Trigger\ Ask<TAB>'.leader.'sdpa  :call feedkeys("'.leader.'sdga")<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Prompt\ Connect\ Info<TAB>'.leader.'sbp  :call feedkeys("'.leader.'sbp")<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Column\ List<TAB>'.leader.'slc  :call feedkeys("'.leader.'slc")<CR>'
         exec 'inoremenu <script> '.menuRoot.'.Column\ List<TAB>'.leader.'slc  <C-O>:silent call feedkeys("<C-O>'.leader.'slc")<CR>'
@@ -477,8 +445,6 @@ if has("gui_running") && has("menu") && g:dbext_default_menu_mode != 0
         exec 'vnoremenu <script> '.menuRoot.'.Describe\ Procedure<TAB>'.leader.'sdp  :<C-U>exec ''DBDescribeProcedure "''.DB_getVisualBlock().''"''<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Describe\ Procedure\ Ask<TAB>'.leader.'sdpa  :DBDescribeProcedureAskName<CR>'
         exec 'inoremenu <script> '.menuRoot.'.Describe\ Procedure\ Ask<TAB>'.leader.'sdpa  <C-O>:DBDescribeProcedureAskName<CR>'
-        exec 'noremenu  <script> '.menuRoot.'.Describe\ Trigger<TAB>'.leader.'sdg  :DBDescribeTrigger<CR>'
-        exec 'noremenu  <script> '.menuRoot.'.Describe\ Trigger\ Ask<TAB>'.leader.'sdga  :DBDescribeTriggerAskName<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Prompt\ Connect\ Info<TAB>'.leader.'sbp  :DBPromptForBufferParameters<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Column\ List<TAB>'.leader.'slc  :DBListColumn<CR>'
         exec 'inoremenu <script> '.menuRoot.'.Column\ List<TAB>'.leader.'slc  <C-O>:DBListColumn<CR>'
@@ -491,7 +457,6 @@ if has("gui_running") && has("menu") && g:dbext_default_menu_mode != 0
         exec 'inoremenu <script> '.menuRoot.'.View\ List<TAB>'.leader.'slv  <C-O>:DBListView<CR>'
         exec 'vnoremenu <script> '.menuRoot.'.Assign\ Variable\ (Visual\ selection)<TAB>'.leader.'sa :DBVarRangeAssign<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Assign\ Variable\ (Current\ line)<TAB>'.leader.'sal :.,.DBVarRangeAssign<CR>'
-        exec 'noremenu  <script> '.menuRoot.'.Trigger\ List<TAB>'.leader.'slg  :DBListTrigger<CR>'
         exec 'noremenu  <script> '.menuRoot.'.List\ Variables<TAB>'.leader.'slr :DBListVar<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Complete\ Tables :DBCompleteTables<CR>'
         exec 'noremenu  <script> '.menuRoot.'.Complete\ Procedures :DBCompleteProcedures<CR>'

@@ -68,7 +68,7 @@ let s:dbext_buffer_last       = -1
 " let s:dbext_prev_bufnr        = 0
 " }}}
 let s:dbext_job_support = 0
-if (has('channel') && has('job') && has('timers')) || has('nvim')
+if has('channel') && has('job') && has('timers')
     let s:dbext_job_support = 1
 endif
 
@@ -440,20 +440,6 @@ function! dbext#DB_execFuncTypeWCheck(name,...)
     else
         return s:DB_{b:dbext_type}_{a:name}(a:1, a:2, a:3, a:4)
     endif
-endfunction
-
-function! dbext#DB_describeTrigger(...)
-    if(a:0 > 0)
-        let trigger_name = s:DB_getObjectAndQuote(a:1)
-    else
-        let trigger_name = expand("<cword>")
-    endif
-    if trigger_name == ""
-        call s:DB_warningMsg( 'dbext:You must supply a trigger name' )
-        return ""
-    endif
-
-    return dbext#DB_execFuncTypeWCheck('describeTrigger', trigger_name)
 endfunction
 
 function! s:DB_getTblAlias(table_name)
@@ -4137,31 +4123,12 @@ function! s:DB_SQLSRV_execSql(str)
     return result
 endfunction
 
-
 function! s:DB_SQLSRV_describeTable(table_name)
-    return s:DB_SQLSRV_execSql(
-        \"exec sp_help '".a:table_name."'; ".
-        \ "SELECT ".
-        \ "    CONCAT(sc.name,'.',tr.name) AS [Trigger Name] ".
-        \ "FROM sys.triggers AS tr ".
-        \ "    INNER JOIN sys.tables AS ta ".
-        \ "        ON ta.object_id = tr.parent_id ".
-        \ "    INNER JOIN sys.schemas AS sc ".
-        \ "        ON sc.schema_id = ta.schema_id ".
-        \ "WHERE CONCAT(sc.name,'.',ta.name) LIKE '".a:table_name."' ".
-        \ "ORDER BY sc.name, ta.name, tr.name; "
-        \)
+    return s:DB_SQLSRV_execSql("exec sp_help ".a:table_name)
 endfunction
 
 function! s:DB_SQLSRV_describeProcedure(procedure_name)
-    return s:DB_SQLSRV_execSql(
-        \ "exec sp_help '".a:procedure_name."'; ".
-        \ "exec sp_helptext '".a:procedure_name."'; ")
-endfunction
-
-function! s:DB_SQLSRV_describeTrigger(trigger_name)
-    return s:DB_SQLSRV_execSql(
-        \ "exec sp_helptext '".a:trigger_name."'; ")
+    return s:DB_SQLSRV_execSql("exec sp_help ".a:procedure_name)
 endfunction
 
 function! s:DB_SQLSRV_stripHeaderFooter(result)
@@ -4185,83 +4152,84 @@ endfunction
 function! s:DB_SQLSRV_getListColumn(table_name)
     let owner      = s:DB_getObjectOwner(a:table_name)
     let table_name = s:DB_getObjectName(a:table_name)
-    let query = "SELECT column_name ".
-              \ "FROM information_schema.columns ".
-              \ "WHERE table_name = '".a:table_name."' ".
-              \ "ORDER BY ORDINAL_POSITION "
+    let query =   "select convert(varchar,c.name) ".
+                \ "  from sysobjects o, sysusers u, syscolumns c ".
+                \ " where o.uid=u.uid ".
+                \ "   and o.id=c.id ".
+                \ "   and o.xtype='U' ".
+                \ "   and o.name = '".table_name."' "
+    if strlen(owner) > 0
+        let query = query .
+                    \ "   and u.name = '".owner."' "
+    endif
+    let query = query .
+                \ " order by c.colid"
     let result = s:DB_SQLSRV_execSql( query )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction
 
 function! s:DB_SQLSRV_getListTable(table_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, table_catalog) AS [Catalog Name] ".
-                \ "    ,CONCAT(table_schema, '.', table_name) AS [Table Name] ".
-                \ "FROM information_schema.tables ".
-                \ "WHERE CONCAT(table_schema, '.', table_name) LIKE '%".a:table_prefix."%' ".
-                \ "ORDER BY table_catalog, table_schema, table_name; "
+                \ "select convert(varchar,o.name), convert(varchar,u.name) ".
+                \ "  from sysobjects o, sysusers u ".
+                \ " where o.uid=u.uid ".
+                \ "   and o.xtype='U' ".
+                \ "   and o.name like '".a:table_prefix."%' ".
+                \ " order by o.name"
                 \ )
 endfunction
 
 function! s:DB_SQLSRV_getListProcedure(proc_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, specific_catalog) AS [Catalog Name] ".
-                \ "    ,CONCAT(specific_schema, '.', specific_name) AS [Routine Name] ".
-                \ "FROM information_schema.routines ".
-                \ "WHERE CONCAT(specific_schema, '.', specific_name) LIKE '%".a:proc_prefix."%' ".
-                \ "ORDER BY specific_catalog, specific_schema, specific_name; "
+                \ "select convert(varchar,o.name), convert(varchar,u.name) ".
+                \ "  from sysobjects o, sysusers u ".
+                \ " where o.uid=u.uid ".
+                \ "   and o.xtype='P' ".
+                \ "   and o.name like '".a:proc_prefix."%' ".
+                \ " order by o.name"
                 \ )
 endfunction
 
 function! s:DB_SQLSRV_getListView(view_prefix)
     return s:DB_SQLSRV_execSql(
-                \ "SELECT CONVERT(VARCHAR, table_catalog) AS [Catalog Name] ".
-                \ "    ,CONCAT(table_schema, '.', table_name) AS [Table Name] ".
-                \ "FROM information_schema.views ".
-                \ "WHERE CONCAT(table_schema, '.', table_name) LIKE '%".a:view_prefix."%' ".
-                \ "ORDER BY table_catalog, table_schema, table_name; "
+                \ "select convert(varchar,o.name), convert(varchar,u.name) ".
+                \ "  from sysobjects o, sysusers u ".
+                \ " where o.uid=u.uid ".
+                \ "   and o.xtype='V' ".
+                \ "   and o.name like '".a:view_prefix."%' ".
+                \ " order by o.name"
                 \ )
 endfunction
-
-function! s:DB_SQLSRV_getListTrigger(trigger_prefix)
-    return s:DB_SQLSRV_execSql(
-                \ "SELECT ".
-                \ "    CONVERT(VARCHAR, CONCAT(sc.name,'.',ta.name)) AS [Table Name] ".
-                \ "    ,CONCAT(sc.name,'.',tr.name)  AS [Trigger Name] ".
-                \ "FROM sys.triggers AS tr ".
-                \ "    INNER JOIN sys.tables AS ta ".
-                \ "        ON ta.object_id = tr.parent_id ".
-                \ "    INNER JOIN sys.schemas AS sc ".
-                \ "        ON sc.schema_id = ta.schema_id ".
-                \ "WHERE CONCAT(sc.name,'.',tr.name) LIKE '%".a:trigger_prefix."%' ".
-                \ "ORDER BY sc.name, ta.name, tr.name; "
-                \ )
-endfunction
-
-
 function! s:DB_SQLSRV_getDictionaryTable() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "SELECT CONCAT(table_schema, '.', table_name) ".
-                \ "FROM information_schema.tables ".
-                \ "ORDER BY table_catalog, table_schema, table_name; "
+                \ "select ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name)+'.'+":'').
+                \ "       convert(varchar,o.name) ".
+                \ "  from sysobjects o, sysusers u ".
+                \ " where o.uid=u.uid ".
+                \ "   and o.xtype='U' ".
+                \ " order by ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name), ":'')."o.name"
                 \ )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction "}}}
-
 function! s:DB_SQLSRV_getDictionaryProcedure() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "SELECT CONCAT(specific_schema, '.', specific_name) ".
-                \ "FROM information_schema.routines ".
-                \ "ORDER BY specific_catalog, specific_schema, specific_name; "
+                \ "select ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name)+'.'+":'').
+                \ "       convert(varchar,o.name) ".
+                \ "  from sysobjects o, sysusers u ".
+                \ " where o.uid=u.uid ".
+                \ "   and o.xtype='P' ".
+                \ " order by ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name), ":'')."o.name"
                 \ )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction "}}}
-
 function! s:DB_SQLSRV_getDictionaryView() "{{{
     let result = s:DB_SQLSRV_execSql(
-                \ "SELECT CONCAT(table_schema, '.', table_name) ".
-                \ "FROM information_schema.views ".
-                \ "ORDER BY table_catalog, table_schema, table_name; "
+                \ "select ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name)+'.'+":'').
+                \ "       convert(varchar,o.name) ".
+                \ "  from sysobjects o, sysusers u ".
+                \ " where o.uid=u.uid ".
+                \ "   and o.xtype='V' ".
+                \ " order by ".(s:DB_get('dict_show_owner')==1?"convert(varchar,u.name), ":'')."o.name"
                 \ )
     return s:DB_SQLSRV_stripHeaderFooter(result)
 endfunction "}}}
@@ -6365,23 +6333,6 @@ function! dbext#DB_getListView(...)
     return dbext#DB_execFuncTypeWCheck('getListView', view_prefix)
 endfunction
 
-function! dbext#DB_getListTrigger(...)
-    if(a:0 > 0)
-        " Strip any leading or trailing spaces
-        let trigger_prefix = substitute(a:1,'\s*\(\w*\)\s*','\1','')
-    else
-        let trigger_prefix = s:DB_getInput(
-                    \ "Enter trigger prefix: ",
-                    \ '',
-                    \ "dbext_cancel"
-                    \ )
-        if trigger_prefix == "dbext_cancel"
-            return ""
-        endif
-    endif
-    return dbext#DB_execFuncTypeWCheck('getListTrigger', trigger_prefix)
-endfunction
-
 function! dbext#DB_getListConnections()
     if s:DB_DBI_Autoload() == -1
         return -1
@@ -6559,10 +6510,6 @@ endfunction
 
 function! dbext#DB_describeProcedurePrompt()
     return dbext#DB_describeProcedure(input("Please enter the name of the procedure to describe: "))
-endfunction
-
-function! dbext#DB_describeTriggerPrompt()
-    return dbext#DB_describeProcedure(input("Please enter the name of the trigger to describe: "))
 endfunction
 
 function! s:DB_option(param, value, separator)
